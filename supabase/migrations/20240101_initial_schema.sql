@@ -5,7 +5,7 @@ create table if not exists public.profiles (
   id uuid references auth.users on delete cascade not null primary key,
   full_name text,
   created_at timestamp with time zone default timezone('utc'::text, now()),
-  updated_at timestamp with time zone default timezone('utc'::text, now()
+  updated_at timestamp with time zone default timezone('utc'::text, now())
 );
 
 alter table public.profiles enable row level security;
@@ -24,7 +24,7 @@ create table if not exists public.accounts (
   account_name text not null,
   balance numeric default 0 not null,
   currency text default 'INR' not null,
-  created_at timestamp with time zone default timezone('utc'::text, now()
+  created_at timestamp with time zone default timezone('utc'::text, now())
 );
 
 alter table public.accounts enable row level security;
@@ -46,7 +46,7 @@ create table if not exists public.beneficiaries (
   account_number text not null,
   account_id uuid references public.accounts on delete cascade,
   is_default boolean default false,
-  created_at timestamp with time zone default timezone('utc'::text, now()
+  created_at timestamp with time zone default timezone('utc'::text, now())
 );
 
 alter table public.beneficiaries enable row level security;
@@ -70,7 +70,7 @@ create table if not exists public.transactions (
   currency text default 'INR' not null,
   memo text,
   status text default 'pending' not null,
-  created_at timestamp with time zone default timezone('utc'::text, now()
+  created_at timestamp with time zone default timezone('utc'::text, now())
 );
 
 alter table public.transactions enable row level security;
@@ -81,18 +81,18 @@ create policy "Users can view own transactions" on public.transactions
 create policy "Users can insert own transactions" on public.transactions
   for insert with check (auth.uid() = user_id);
 
--- audit_logs table (insert-only from server using service role)
+-- audit_logs table (insert-only from server using the service role key)
 create table if not exists public.audit_logs (
   id uuid default gen_random_uuid() primary key,
   request_id text not null,
   user_id uuid references auth.users on delete set null,
   raw_input text not null,
   normalized_input text,
-  verdict jsonb not null,
+ verdict jsonb not null,
   threat_category text,
   risk_level text,
   risk_score integer,
-  created_at timestamp with time zone default timezone('utc'::text, now()
+  created_at timestamp with time zone default timezone('utc'::text, now())
 );
 
 alter table public.audit_logs enable row level security;
